@@ -1,0 +1,64 @@
+body { 
+    height:100%;
+    width:100%;
+    margin:0;
+    padding:0;
+    display: block;
+    font-family : "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+
+table { 
+border-spacing: 0;
+border: 5px solid grey;
+margin-bottom: 500px;
+margin-top: 0px;
+margin-right: 0px;
+margin-left: 0px;
+pading: 5;
+}
+
+tr {
+    height:141px;
+    pading: 5;
+}
+th:nth-child(1) {
+border: 2px solid grey;
+  pading: 0;
+  margin: 0;
+  width: 400px;
+  font-size : 30px;
+}
+
+th:nth-child(2) {
+border: 2px solid grey;
+  pading: 0;
+  margin: 0;
+  width: 400px;
+  font-size : 50px;
+}
+
+
+td:nth-child(1) {
+  border: 2px solid grey;
+  width: 15%;
+  background: #ddd;
+  pading: 5;
+  margin: 0;
+  font-size : 30px;
+  text-align: center;
+}
+
+
+/* the second */
+td:nth-child(2) {
+border: 2px solid grey;
+  width: 85%;
+  background: white;
+}
+
+strong {
+    display: block;
+    font-size : 50px;
+}
+
