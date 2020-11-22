@@ -3,7 +3,6 @@ body {
     width:100%;
     margin:0;
     padding:0;
-    display: block;
     font-family : "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 }
 
@@ -19,7 +18,7 @@ pading: 5;
 }
 
 tr {
-    height:141px;
+    height:131px;
     pading: 5;
 }
 th:nth-child(1) {
@@ -50,11 +49,22 @@ td:nth-child(1) {
 }
 
 
-/* the second */
 td:nth-child(2) {
-border: 2px solid grey;
+  border: 2px solid grey;
   width: 85%;
-  background: white;
+  text-align: left;
+  vertical-align: top;
+  font-family: "Lucida Console", Courier, monospace;
+  margin-bottom: 20;
+  padding-left: 20;
+}
+
+tr:nth-child(6) {
+  background: #E8EAEE;
+}
+
+tr:nth-child(7) {
+  background: #E8EAEE;
 }
 
 strong {
