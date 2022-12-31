@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.grey,
@@ -74,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.black,
               child: Transform.rotate(
                 angle: pi/2,
-                child: Text('2022', style: GoogleFonts.bebasNeue(fontSize: MediaQuery.of(context).size.height * 0.6, color: Colors.white))
+                child: FittedBox(child: Text('${DateTime.now().year + 1}', style: GoogleFonts.bebasNeue(fontSize: MediaQuery.of(context).size.height * 0.6, color: Colors.white)))
               ),
             )
             //Container(

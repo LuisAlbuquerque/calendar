@@ -5,6 +5,7 @@ import 'package:calendarapp/models/luas.dart';
 import 'package:calendarapp/utils/feriados.dart';
 import 'package:calendarapp/utils/images.dart';
 import 'package:calendarapp/utils/luas.dart';
+import 'package:calendarapp/utils/pdf_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -15,7 +16,7 @@ pw.Page _addPage(List<DateTime> week, Font emoji, int semana){
   return pw.Page(
            pageTheme: PageTheme(
         pageFormat: PdfPageFormat.a4,
-        margin: EdgeInsets.all(0),
+        margin: EdgeInsets.only(top: marginTop, bottom: marginBottom, left: marginLeft, right: marginRight),
         //theme :ThemeData.withFont(
         //  base: await PdfGoogleFonts.bebasNeueRegular(),
         //  bold: await PdfGoogleFonts.bebasNeueRegular(),
@@ -57,23 +58,23 @@ pw.Widget dayWidget(DateTime day, String weekday, Font emoji, [bool fimDeSemana 
         child: pw.Container(
 
              decoration: BoxDecoration(
-               color: fimDeSemana || getDescription(day) != ''? PdfColors.grey200: PdfColors.white,
-               border: Border.all(color: PdfColors.black, width: 2 )
+               color: fimDeSemana ? fimDeSemanaColorRight : getDescription(day) != ''? feriadoColorRight : normalDayColorRight,
+               border: Border.all(color: borderCOlor, width: borderWidth )
                ),
          child: pw.Row(
            crossAxisAlignment: CrossAxisAlignment.start,
            children: [
            pw.Container(
              decoration: BoxDecoration(
-              color: fimDeSemana || getDescription(day) != '' ? PdfColors.grey : PdfColors.grey400,
-               border: Border.all(color: PdfColors.black, width: 2 )
+              color: fimDeSemana  ? fimDeSemanaColorLeft : getDescription(day) != ''? feriadoColorLeft : normalDayColorLeft,
+               border: Border.all(color: borderCOlor, width: borderWidth )
                ),
               width: 100,
                child: pw.Column(
                  mainAxisAlignment: MainAxisAlignment.center,
                  children: [
-              pw.Text(day.day.toString(), style: TextStyle(fontSize: 30)),
-              pw.Text(weekday)]
+              pw.Text(day.day.toString(), style: TextStyle(fontSize: dayFontSize, color: dayFontColor)),
+              pw.Text(weekday, style: TextStyle(fontSize:dayWeekFontSize, color: dayWeekFontColor ))]
               )),
 
              pw.Padding(padding: EdgeInsets.all(10), child: pw.Text(getDescription(day), style: TextStyle( fontFallback: [emoji],))) 
@@ -112,21 +113,21 @@ pw.Widget weekendPage(List<DateTime> weekend, Font emoji, int semana){
       pw.Expanded(flex:3, child: pw.Container(
         child: pw.Stack(children: [ 
           //pw.Image(image, fit: BoxFit.fill),
-          pw.Positioned(left: 10, right: 520, child: Text(weekend.last.year.toString()[0], style: TextStyle(fontSize: 80, color: PdfColors.grey300, fontWeight: FontWeight.bold))),
-          pw.Positioned(left: 10, right: 300, top: 80, child: Text(weekend.last.year.toString()[1], style: TextStyle(fontSize: 80, color: PdfColors.grey300, fontWeight: FontWeight.bold))),
-          pw.Positioned(left: 60, right: 10, child: Text(weekend.last.year.toString()[2], style: TextStyle(fontSize: 80, color: PdfColors.grey300, fontWeight: FontWeight.bold))),
-          pw.Positioned(left: 60, right: 300, top: 80, child: Text(weekend.last.year.toString()[3], style: TextStyle(fontSize: 80, color: PdfColors.grey300, fontWeight: FontWeight.bold))),
-          Align(alignment: Alignment.bottomRight, child: pw.Padding(padding: EdgeInsets.only(bottom: 20, right: 5), child: pw.Text(getMonth(weekend), style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: PdfColors.grey800), textAlign: TextAlign.right))),
-          Align(alignment: Alignment.bottomRight, child: pw.Padding(padding: EdgeInsets.only(bottom: 5, right: 5), child: pw.Text('Semana $semana', style: TextStyle(fontSize: 20, color: PdfColors.grey800), textAlign: TextAlign.right))),
+          pw.Positioned(left: 10, right: 520, child: Text(weekend.last.year.toString()[0], style: TextStyle(fontSize: anoFontSize, color: anoFontColor, fontWeight: FontWeight.bold))),
+          pw.Positioned(left: 10, right: 300, top: 80, child: Text(weekend.last.year.toString()[1], style: TextStyle(fontSize: anoFontSize, color: anoFontColor, fontWeight: FontWeight.bold))),
+          pw.Positioned(left: 60, right: 10, child: Text(weekend.last.year.toString()[2], style: TextStyle(fontSize: anoFontSize, color: anoFontColor, fontWeight: FontWeight.bold))),
+          pw.Positioned(left: 60, right: 300, top: 80, child: Text(weekend.last.year.toString()[3], style: TextStyle(fontSize: anoFontSize, color: anoFontColor, fontWeight: FontWeight.bold))),
+          Align(alignment: Alignment.bottomRight, child: pw.Padding(padding: EdgeInsets.only(bottom: 20, right: 5), child: pw.Text(getMonth(weekend), style: TextStyle(fontSize: mesFontSize, fontWeight: FontWeight.bold, color: mesFontColor), textAlign: TextAlign.right))),
+          Align(alignment: Alignment.bottomRight, child: pw.Padding(padding: EdgeInsets.only(bottom: 5, right: 5), child: pw.Text('Semana $semana', style: TextStyle(fontSize: semanaFontSize, color: semanaFontColor), textAlign: TextAlign.right))),
           
-          ]), color: PdfColors.grey200
+          ]), color: headerColor 
          )
          ),
-      dayWidget(weekend[0], 'Segunda-Feira',emoji),
-      dayWidget(weekend[1], 'Terça-Feira', emoji),
-      dayWidget(weekend[2], 'Quarta-Feira', emoji),
-      dayWidget(weekend[3], 'Quinta-Feira', emoji),
-      dayWidget(weekend[4], 'Sexta-Feira', emoji),
+      dayWidget(weekend[0], 'Segunda',emoji),
+      dayWidget(weekend[1], 'Terça', emoji),
+      dayWidget(weekend[2], 'Quarta', emoji),
+      dayWidget(weekend[3], 'Quinta', emoji),
+      dayWidget(weekend[4], 'Sexta', emoji),
       dayWidget(weekend[5], 'Sabado', emoji, true),
       dayWidget(weekend[6], 'Domingo',emoji, true),
     ]

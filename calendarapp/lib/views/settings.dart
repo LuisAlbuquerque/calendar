@@ -3,10 +3,13 @@ import 'package:calendarapp/models/feriado.dart';
 import 'package:calendarapp/models/luas.dart';
 import 'package:calendarapp/utils/feriados.dart';
 import 'package:calendarapp/utils/luas.dart';
+import 'package:calendarapp/utils/pdf_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pdf/pdf.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class Settings extends StatefulWidget {
   const Settings({ Key? key }) : super(key: key);
@@ -138,7 +141,6 @@ class _SettingsState extends State<Settings> {
               appointmentBuilder: (BuildContext context, CalendarAppointmentDetails d){
                 return ListView.builder(itemCount: d.appointments.length, itemBuilder: (context, i){
                 return Container(
-                  color: d.appointments.toList()[i].background,
                   child: InkWell(
                     onTap: (){
                       showDialog(context: context, builder: (context){
@@ -173,13 +175,498 @@ class _SettingsState extends State<Settings> {
                         );
                       });
                     },
-                    child: Text(d.appointments.first.eventName)
+                    child: Row(
+                      children: [
+
+               Padding(
+                 padding: const EdgeInsets.only(right: 10, left: 5),
+                 child: Container(
+                   width: 10,
+                   height: 10,
+                   decoration: BoxDecoration(
+                    color: d.appointments.toList()[i].background,
+                    borderRadius: BorderRadius.all(Radius.circular(20))
+                      ),
+                 ),
+               ),
+                        Text(d.appointments.first.eventName),
+                      ],
+                    )
                     )
                 );
                 },);
               },
               ),
               ),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      Text('Cor do Cabeçalho'),
+                      InkWell(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Escolha uma nova cor!'),
+                              content: SingleChildScrollView(
+                                child: ColorPicker(
+                                  pickerColor: Color(headerColor.toInt()),
+                                  onColorChanged: (c){ setState(() {headerColor = PdfColor.fromInt(c.value); });},
+                                ),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  child: const Text('Aplicar'),
+                                  onPressed: () {
+                                    setState(() { });
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Container(height: 10,width: 30, color: Color(headerColor.toInt()))),
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      Text('Mês'),
+                      InkWell(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Escolha uma nova cor!'),
+                              content: SingleChildScrollView(
+                                child: ColorPicker(
+                                  pickerColor: Color(mesFontColor.toInt()),
+                                  onColorChanged: (c){ setState(() {mesFontColor =  PdfColor.fromInt(c.value); });},
+                                ),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  child: const Text('Aplicar'),
+                                  onPressed: () {
+                                    setState(() { });
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Container(height: 10,width: 30, color: Color(mesFontColor.toInt()))),
+                      Slider(min: 0, max: 100, value: mesFontSize, onChanged: (v){ setState(() { mesFontSize = v;});}, label: borderWidth.round().toString(),)
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      Text('Ano'),
+                      InkWell(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Escolha uma nova cor!'),
+                              content: SingleChildScrollView(
+                                child: ColorPicker(
+                                  pickerColor: Color(anoFontColor.toInt()),
+                                  onColorChanged: (c){ setState(() {anoFontColor=  PdfColor.fromInt(c.value); });},
+                                ),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  child: const Text('Aplicar'),
+                                  onPressed: () {
+                                    setState(() { });
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Container(height: 10,width: 30, color: Color(anoFontColor.toInt()))),
+                      Slider(min: 0, max: 100, value: anoFontSize, onChanged: (v){ setState(() { anoFontSize = v;});}, label: borderWidth.round().toString(),)
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      Text('Semana'),
+                      InkWell(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Escolha uma nova cor!'),
+                              content: SingleChildScrollView(
+                                child: ColorPicker(
+                                  pickerColor: Color(semanaFontColor.toInt()),
+                                  onColorChanged: (c){ setState(() {semanaFontColor =  PdfColor.fromInt(c.value); });},
+                                ),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  child: const Text('Aplicar'),
+                                  onPressed: () {
+                                    setState(() { });
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Container(height: 10,width: 30, color: Color(semanaFontColor.toInt()))),
+                      Slider(min: 0, max: 100, value: semanaFontSize, onChanged: (v){ setState(() { semanaFontSize= v;});}, label: borderWidth.round().toString(),)
+                    ],
+                  ),
+                ]),
+
+                SizedBox(height: 40,),
+
+              Row(
+
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      Text('Cor da Borda'),
+                      InkWell(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Escolha uma nova cor!'),
+                              content: SingleChildScrollView(
+                                child: ColorPicker(
+                                  pickerColor: Color(borderCOlor.toInt()),
+                                  onColorChanged: (c){ setState(() {borderCOlor = PdfColor.fromInt(c.value); });},
+                                ),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  child: const Text('Aplicar'),
+                                  onPressed: () {
+                                    setState(() { });
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Container(height: 10,width: 30, color: Color(borderCOlor.toInt()))),
+                      Slider(min: 0, max: 10, value: borderWidth, onChanged: (v){ setState(() { borderWidth = v;});}, label: borderWidth.round().toString(),)
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      Text('Margem em cima'),
+                      Slider(min: 0, max: 100, value: marginTop, onChanged: (v){ setState(() { marginTop = v;});}, label: marginTop.round().toString(),)
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      Text('Margem em baixo'),
+                      Slider(min: 0, max: 100, value: marginBottom, onChanged: (v){ setState(() { marginBottom = v;});}, label: marginBottom.round().toString(),)
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      Text('Margem à esquerda'),
+                      Slider(min: 0, max: 100, value: marginLeft, onChanged: (v){ setState(() { marginLeft = v;});}, label: marginLeft.round().toString(),)
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      Text('Margem à direita'),
+                      Slider(min: 0, max: 100, value: marginRight, onChanged: (v){ setState(() { marginRight = v;});}, label: marginRight.round().toString(),)
+                    ],
+                  ),
+                ],
+              ),
+
+                SizedBox(height: 40,),
+
+              Row(
+
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      Text('Dia do mês'),
+                      InkWell(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Escolha uma nova cor!'),
+                              content: SingleChildScrollView(
+                                child: ColorPicker(
+                                  pickerColor: Color(dayFontColor.toInt()),
+                                  onColorChanged: (c){ setState(() {dayFontColor = PdfColor.fromInt(c.value); });},
+                                ),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  child: const Text('Aplicar'),
+                                  onPressed: () {
+                                    setState(() { });
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Container(height: 10,width: 30, color: Color(dayFontColor.toInt()))),
+                      Slider(min: 0, max: 100, value: dayFontSize, onChanged: (v){ setState(() { dayFontSize = v;});}, label: borderWidth.round().toString(),)
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      Text('Dia da semana'),
+                      InkWell(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Escolha uma nova cor!'),
+                              content: SingleChildScrollView(
+                                child: ColorPicker(
+                                  pickerColor: Color(dayWeekFontColor.toInt()),
+                                  onColorChanged: (c){ setState(() {dayWeekFontColor = PdfColor.fromInt(c.value); });},
+                                ),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  child: const Text('Aplicar'),
+                                  onPressed: () {
+                                    setState(() { });
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Container(height: 10,width: 30, color: Color(dayWeekFontColor.toInt()))),
+                      Slider(min: 0, max: 100, value: dayWeekFontSize, onChanged: (v){ setState(() { dayWeekFontSize = v;});}, label: borderWidth.round().toString(),)
+                    ],
+                  ),
+
+                ]),
+
+              SizedBox(height: 40,),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      Text('Fim de semana (esq)'),
+                      InkWell(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Escolha uma nova cor!'),
+                              content: SingleChildScrollView(
+                                child: ColorPicker(
+                                  pickerColor: Color(fimDeSemanaColorLeft.toInt()),
+                                  onColorChanged: (c){ setState(() {fimDeSemanaColorLeft= PdfColor.fromInt(c.value); });},
+                                ),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  child: const Text('Aplicar'),
+                                  onPressed: () {
+                                    setState(() { });
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Container(height: 10,width: 30, color: Color(fimDeSemanaColorLeft.toInt()))),
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      Text('Fim de semana (dir)'),
+                      InkWell(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Escolha uma nova cor!'),
+                              content: SingleChildScrollView(
+                                child: ColorPicker(
+                                  pickerColor: Color(fimDeSemanaColorRight.toInt()),
+                                  onColorChanged: (c){ setState(() {fimDeSemanaColorRight= PdfColor.fromInt(c.value); });},
+                                ),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  child: const Text('Aplicar'),
+                                  onPressed: () {
+                                    setState(() { });
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Container(height: 10,width: 30, color: Color(fimDeSemanaColorRight.toInt()))),
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      Text('Feriado (esq)'),
+                      InkWell(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Escolha uma nova cor!'),
+                              content: SingleChildScrollView(
+                                child: ColorPicker(
+                                  pickerColor: Color(feriadoColorLeft.toInt()),
+                                  onColorChanged: (c){ setState(() {feriadoColorLeft = PdfColor.fromInt(c.value); });},
+                                ),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  child: const Text('Aplicar'),
+                                  onPressed: () {
+                                    setState(() { });
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Container(height: 10,width: 30, color: Color(feriadoColorLeft.toInt()))),
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      Text('Feriado (dir)'),
+                      InkWell(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Escolha uma nova cor!'),
+                              content: SingleChildScrollView(
+                                child: ColorPicker(
+                                  pickerColor: Color(feriadoColorRight.toInt()),
+                                  onColorChanged: (c){ setState(() {feriadoColorRight = PdfColor.fromInt(c.value); });},
+                                ),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  child: const Text('Aplicar'),
+                                  onPressed: () {
+                                    setState(() { });
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Container(height: 10,width: 30, color: Color(feriadoColorRight.toInt()))),
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      Text('Normal (esq)'),
+                      InkWell(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Escolha uma nova cor!'),
+                              content: SingleChildScrollView(
+                                child: ColorPicker(
+                                  pickerColor: Color(normalDayColorLeft.toInt()),
+                                  onColorChanged: (c){ setState(() {normalDayColorLeft = PdfColor.fromInt(c.value); });},
+                                ),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  child: const Text('Aplicar'),
+                                  onPressed: () {
+                                    setState(() { });
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Container(height: 10,width: 30, color: Color(normalDayColorLeft.toInt()))),
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      Text('Normal (dir)'),
+                      InkWell(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Escolha uma nova cor!'),
+                              content: SingleChildScrollView(
+                                child: ColorPicker(
+                                  pickerColor: Color(normalDayColorRight.toInt()),
+                                  onColorChanged: (c){ setState(() {normalDayColorRight= PdfColor.fromInt(c.value); });},
+                                ),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  child: const Text('Aplicar'),
+                                  onPressed: () {
+                                    setState(() { });
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Container(height: 10,width: 30, color: Color(normalDayColorRight.toInt()))),
+                    ],
+                  ),
+
+
+                ]),
+
+                SizedBox(height: 60,),
+
+
 
               Center(
                 child: ElevatedButton(child: Text('Gerar o Calendario'),onPressed: () async{ await getCalendarData(year);}),
